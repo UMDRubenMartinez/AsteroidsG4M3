@@ -264,11 +264,18 @@ class Disparo {
         this.y -= this.velocidad * Math.cos((this.angulo * Math.PI) / 180);
     }
 }
+let ultimoDisparo = 0;
+const intervaloDisparo = 200; // Intervalo de 200 milisegundos
 
 // Función para crear un disparo
 function crearDisparo() {
-    let disparo = new Disparo(nave.x, nave.y, nave.rotacion);
-    disparos.push(disparo);
+    const ahora = Date.now(); // Tiempo actual en milisegundos
+
+    // Verificar si ha pasado suficiente tiempo desde el último disparo
+    if (ahora - ultimoDisparo > intervaloDisparo) {
+        disparos.push(new Disparo(nave.x, nave.y, nave.rotacion));
+        ultimoDisparo = ahora; // Actualizar el tiempo del último disparo
+    }
 }
 
 // Evento de teclado para disparar
