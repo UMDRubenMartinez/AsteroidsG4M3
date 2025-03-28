@@ -1,6 +1,14 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+let mouseX = 0;
+let mouseY = 0
+
+canvas.addEventListener("mousemove", (evento) => {
+    mouseX = evento.clientX - canvas.offsetLeft;
+    mouseY = evento.clientY - canvas.offsetTop;
+});
+
 // Ajustar el tamaño del canvas
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -126,13 +134,13 @@ document.addEventListener("keyup", (evento) => {
 
 // Función para actualizar la posición de la nave
 function actualizarNave() {
-    if (teclasPresionadas["ArrowLeft"]) {
+    /*if (teclasPresionadas["ArrowLeft"]||teclasPresionadas["a"]) {
         nave.rotacion -= 5; // Rotar a la izquierda
     }
-    if (teclasPresionadas["ArrowRight"]) {
+    if (teclasPresionadas["ArrowRight"]||teclasPresionadas["d"]) {
         nave.rotacion += 5; // Rotar a la derecha
     }
-    if (teclasPresionadas["ArrowUp"]) {
+    if (teclasPresionadas["ArrowUp"]||teclasPresionadas["w"]) {
         nave.velocidad = 5; // Acelerar hacia adelante
     } else {
         nave.velocidad = 0; // Detener la nave
@@ -147,6 +155,23 @@ function actualizarNave() {
     if (nave.x > canvas.width) nave.x = 0;
     if (nave.y < 0) nave.y = canvas.height;
     if (nave.y > canvas.height) nave.y = 0;
+    */
+   // Calcular el ángulo entre la nave y el ratón
+   // Calcular el ángulo entre la nave y el ratón
+   const dx = mouseX - nave.x;
+   const dy = mouseY - nave.y;
+   let angulo = Math.atan2(dy, dx) * 180 / Math.PI;
+
+   // Ajustar el ángulo para que la nave apunte correctamente
+   angulo += 90; // Restar 90 grados
+
+   nave.rotacion = angulo;
+
+   if (teclasPresionadas["w"]) nave.velocidad = 5; else nave.velocidad = 0;
+   nave.x += nave.velocidad * Math.sin((nave.rotacion * Math.PI) / 180);
+   nave.y -= nave.velocidad * Math.cos((nave.rotacion * Math.PI) / 180);
+   if (nave.x < 0) nave.x = canvas.width; if (nave.x > canvas.width) nave.x = 0;
+   if (nave.y < 0) nave.y = canvas.height; if (nave.y > canvas.height) nave.y = 0;
 }
 
 // Puntuación
@@ -368,7 +393,19 @@ function aumentarPuntuacion() {
     puntuacion += 10;
 }
 
+//------------------------------------------
 
+//Musica
+
+// Crear el elemento de audio
+var backgroundMusic = new Audio('1.mp3');
+backgroundMusic.loop = true; // Para que la música se repita
+backgroundMusic.volume = 0.5; // Ajustar el volumen
+
+// Reproducir la música
+backgroundMusic.play().catch((error) => {
+    console.log('Autoplay no permitido, esperando interacción del usuario:', error);
+});
 
 //------------------------------------------
 
